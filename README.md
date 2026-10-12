@@ -1,5 +1,7 @@
 # StudyMate
 
+[![Backend CI](https://github.com/SahilIjaz/studymate/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/SahilIjaz/studymate/actions/workflows/backend-ci.yml) [![Frontend CI](https://github.com/SahilIjaz/studymate/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/SahilIjaz/studymate/actions/workflows/frontend-ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Ask questions about your own PDFs and get answers with page-level citations, streamed token by token.
 
 StudyMate is a retrieval-augmented generation (RAG) app. PDFs are split into page-aware chunks, embedded, indexed in FAISS and BM25, and retrieved with reciprocal rank fusion. The model answers strictly from the retrieved passages and cites them inline, and the web client turns those citations into clickable chips that open the exact passage.
