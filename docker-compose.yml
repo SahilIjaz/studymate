@@ -1,11 +1,14 @@
 # Runs both halves of StudyMate together. From this directory:
-#   ANTHROPIC_API_KEY=sk-ant-... docker compose up --build
+#   GEMINI_API_KEY=... docker compose up --build
+# Set ANTHROPIC_API_KEY instead to answer with Claude. Both keys are optional;
+# with neither, set LLM_MOCK=true in study-mate-backend/.env for canned answers.
 # Web: http://localhost:3000   API: http://localhost:8000/docs
 services:
   api:
     build: ./study-mate-backend
     environment:
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?set ANTHROPIC_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       CORS_ORIGINS: http://localhost:3000
       ENVIRONMENT: development
       DATA_DIR: /data
