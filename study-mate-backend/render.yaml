@@ -19,9 +19,9 @@ services:
         value: /data
       - key: CORS_ORIGINS
         value: https://studymate.example.com
-      - key: ANTHROPIC_API_KEY
+      - key: GEMINI_API_KEY
         sync: false
-      - key: CLAUDE_MODEL
-        value: claude-opus-5-5
+      - key: LLM_PROVIDER
+        value: gemini
       - key: EMBEDDING_PROVIDER
-        value: fastembed
+        value: gemini
