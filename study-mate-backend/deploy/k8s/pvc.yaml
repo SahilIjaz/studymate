@@ -1,0 +1,13 @@
+# Holds the SQLite database, uploaded PDFs and FAISS index files.
+# ReadWriteOnce: exactly one pod writes to it (see deployment strategy).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: studymate-data
+  namespace: studymate
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi
+  # storageClassName: standard   # set if your cluster has no default class

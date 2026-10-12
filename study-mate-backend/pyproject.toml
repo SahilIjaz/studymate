@@ -1,0 +1,28 @@
+[project]
+name = "studymate-api"
+version = "2.0.0"
+description = "Ask questions about your own PDFs: hybrid retrieval (FAISS + BM25) with answers streamed from Claude and page-level citations."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Sahil Ijaz" }]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+src = ["."]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "BLE", "ASYNC"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "BLE001"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["ignore::DeprecationWarning"]

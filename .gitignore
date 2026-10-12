@@ -1,0 +1,22 @@
+# Secrets: only the .example templates are tracked
+**/.env
+**/.env.*
+!**/.env.example
+
+# Dependencies and build output
+**/node_modules/
+**/.next/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/*.tsbuildinfo
+
+# Runtime data
+study-mate-backend/data/
+study-mate-backend/models/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

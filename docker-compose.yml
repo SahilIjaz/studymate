@@ -1,0 +1,28 @@
+# Runs both halves of StudyMate together. From this directory:
+#   ANTHROPIC_API_KEY=sk-ant-... docker compose up --build
+# Web: http://localhost:3000   API: http://localhost:8000/docs
+services:
+  api:
+    build: ./study-mate-backend
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?set ANTHROPIC_API_KEY}
+      CORS_ORIGINS: http://localhost:3000
+      ENVIRONMENT: development
+      DATA_DIR: /data
+    volumes:
+      - studymate-data:/data
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./studyMate-frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  studymate-data:

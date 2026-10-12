@@ -1,0 +1,26 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+studymate-env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Runtime data (SQLite, uploads, FAISS indexes, model cache)
+data/
+models/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Filled-in Kubernetes secret (keep only the .example template)
+deploy/k8s/secret.yaml

@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: studymate
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  # - ingress.yaml   # enable once an ingress controller and DNS exist
+images:
+  - name: studymate-api
+    newName: studymate-api
+    newTag: latest

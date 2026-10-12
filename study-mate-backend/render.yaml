@@ -1,0 +1,27 @@
+# Render blueprint. A persistent disk keeps the SQLite DB, uploaded PDFs and
+# FAISS indexes across deploys and restarts.
+services:
+  - type: web
+    name: studymate-api
+    runtime: docker
+    rootDir: study-mate-backend
+    plan: starter
+    healthCheckPath: /health/ready
+    autoDeploy: true
+    disk:
+      name: studymate-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATA_DIR
+        value: /data
+      - key: CORS_ORIGINS
+        value: https://studymate.example.com
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: CLAUDE_MODEL
+        value: claude-opus-5-5
+      - key: EMBEDDING_PROVIDER
+        value: fastembed

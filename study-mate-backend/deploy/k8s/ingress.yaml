@@ -1,0 +1,24 @@
+# Optional: expose the API through an ingress controller (nginx shown).
+# Streaming answers need buffering off, otherwise SSE events arrive in bursts.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: studymate-api
+  namespace: studymate
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "25m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.studymate.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: studymate-api
+                port:
+                  name: http
