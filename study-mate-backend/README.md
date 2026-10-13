@@ -217,6 +217,10 @@ The script installs k3s and cert-manager, creates the secrets, updates DuckDNS, 
 
 Edit `deploy/k8s/base/configmap.yaml` for `CORS_ORIGINS` and model names, and `deploy/k8s/kustomization.yaml` to point `images:` at your registry tag. For a remote registry, `docker tag studymate-api:latest ghcr.io/<you>/studymate-api:<tag> && docker push ...` and set `newName`/`newTag` accordingly.
 
+### Hugging Face Spaces (no card, no custom domain)
+
+`deploy/huggingface/` holds a Space that wraps the GHCR image. Create a Docker Space, upload those two files (or set the `HF_TOKEN` secret and `HF_SPACE` variable on the GitHub repo so the `Backend Space` workflow pushes them after every image build), then add `GEMINI_API_KEY` as a secret and `LLM_PROVIDER`, `EMBEDDING_PROVIDER`, `CORS_ORIGINS` as variables in the Space settings. The API is served at `https://<user>-<space>.hf.space`. Free Spaces have no persistent disk and sleep after about two days idle.
+
 ### Render
 
 `render.yaml` describes a Docker web service with a 1 GB persistent disk mounted at `/data`. Set `ANTHROPIC_API_KEY` in the dashboard and `CORS_ORIGINS` to the frontend origin. Any container host works the same way: one container, one volume, the env vars above.

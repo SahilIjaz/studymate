@@ -1,0 +1,36 @@
+name: Backend Space
+
+# Mirrors deploy/huggingface/ to the Hugging Face Space after each successful
+# image build, so the Space rebuilds from the fresh GHCR image.
+# Needs repository secret HF_TOKEN (write) and variable HF_SPACE (e.g. SahilIjaz/studymate-api).
+on:
+  workflow_run:
+    workflows: ["Backend image"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push deploy/huggingface to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          set -euo pipefail
+          test -n "$HF_TOKEN" || { echo "HF_TOKEN secret is not set"; exit 1; }
+          test -n "$HF_SPACE" || { echo "HF_SPACE variable is not set"; exit 1; }
+          cd study-mate-backend/deploy/huggingface
+          git init -q -b main
+          git config user.name "Sahil Ijaz"
+          git config user.email "hssahil2913@gmail.com"
+          git add .
+          git commit -qm "Deploy ${GITHUB_SHA::7}"
+          git push -f "https://SahilIjaz:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" main
