@@ -1,0 +1,23 @@
+name: Keep API warm
+
+# Free hosts stop idle services (Render after 15 min, Spaces after ~2 days).
+# A cheap /health request every 10 minutes keeps the API answering instantly.
+# Set repository variable API_URL, e.g. https://studymate-api.onrender.com
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    if: ${{ vars.API_URL != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: GET /health
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "${{ vars.API_URL }}/health" || echo 000)
+          echo "status $code"
+          test "$code" = "200"
