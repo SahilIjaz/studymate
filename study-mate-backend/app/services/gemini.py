@@ -69,6 +69,7 @@ class GeminiService:
             )
         )
         config = types.GenerateContentConfig(
+            thinking_config=self._thinking(),
             system_instruction=prompts.SYSTEM_PROMPT,
             max_output_tokens=self.settings.claude_max_tokens,
             temperature=0.3,
@@ -134,7 +135,10 @@ class GeminiService:
                 model=self.fast_model,
                 contents=prompts.build_condense_turn(history, question),
                 config=types.GenerateContentConfig(
-                    system_instruction=prompts.CONDENSE_PROMPT, max_output_tokens=300, temperature=0
+                    thinking_config=self._thinking(),
+                    system_instruction=prompts.CONDENSE_PROMPT,
+                    max_output_tokens=300,
+                    temperature=0,
                 ),
             )
             return (response.text or "").strip() or question
@@ -150,6 +154,7 @@ class GeminiService:
                 model=self.fast_model,
                 contents=f"<excerpt>\n{excerpt[:6000]}\n</excerpt>",
                 config=types.GenerateContentConfig(
+                    thinking_config=self._thinking(),
                     system_instruction=prompts.SUGGEST_PROMPT,
                     max_output_tokens=400,
                     response_mime_type="application/json",
@@ -160,6 +165,10 @@ class GeminiService:
         return _parse_questions(response.text or "")
 
     # --------------------------------------------------------------- utilities
+    def _thinking(self) -> types.ThinkingConfig | None:
+        level = self.settings.gemini_thinking_level
+        return types.ThinkingConfig(thinking_level=level) if level else None
+
     def _map(self, exc: errors.APIError) -> Exception:
         log.warning("gemini_error", extra={"status": exc.code, "detail": str(exc.message)[:200]})
         if exc.code == 429:

@@ -10,6 +10,17 @@ from app.schemas import HealthOut
 router = APIRouter(tags=["health"])
 
 
+@router.get("/", include_in_schema=False)
+async def root(services: ServicesDep) -> dict[str, str]:
+    """Hosting platforms probe `/`; point humans at the docs."""
+    return {
+        "service": services.settings.app_name,
+        "version": services.settings.app_version,
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
 @router.get("/health", response_model=HealthOut)
 async def health(services: ServicesDep) -> HealthOut:
     s = services.settings

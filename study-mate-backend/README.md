@@ -144,7 +144,8 @@ Codes you can branch on: `workspace_required`, `unsupported_file_type`, `invalid
 |---|---|---|
 | `LLM_PROVIDER` | `auto` | `gemini`, `claude` or `mock`. `auto` picks Gemini when `GEMINI_API_KEY` is set, else Claude. |
 | `GEMINI_API_KEY` | – | Free at aistudio.google.com/apikey. |
-| `GEMINI_MODEL` / `GEMINI_FALLBACK_MODEL` / `GEMINI_FAST_MODEL` | `gemini-3.8-flash` / `gemini-flash-lite-latest` / `gemini-flash-lite-latest` | Answers / retry target when the primary is overloaded / side tasks. |
+| `GEMINI_MODEL` / `GEMINI_FALLBACK_MODEL` / `GEMINI_FAST_MODEL` | `gemini-3.5-flash` / `gemini-flash-lite-latest` / `gemini-flash-lite-latest` | Answers / retry target when the primary is overloaded / side tasks. |
+| `GEMINI_THINKING_LEVEL` | `low` | Thinking depth on Gemini 3.x. `low` keeps the first token under ~2 s; empty uses the model default. |
 | `ANTHROPIC_API_KEY` | – | Needed only for the Claude provider. Without any key, uploads and retrieval still work. |
 | `CLAUDE_MODEL` | `claude-opus-5-5` | Answering model. |
 | `CLAUDE_FAST_MODEL` | `claude-haiku-5-5` | Query rewriting and question suggestions. |

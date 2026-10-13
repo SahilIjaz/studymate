@@ -28,6 +28,7 @@ def _events(raw: str) -> list[tuple[str, dict]]:
 
 
 def test_health_reports_configuration(client: TestClient) -> None:
+    assert client.get("/").json()["health"] == "/health"
     body = client.get("/health").json()
     assert body["status"] == "ok"
     assert body["embedding_provider"] == "hashed-bow-384"

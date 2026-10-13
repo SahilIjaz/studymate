@@ -45,7 +45,9 @@ class Settings(BaseSettings):
 
     # Gemini (free tier friendly)
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-3.8-flash"
+    gemini_model: str = "gemini-3.5-flash"
+    # Thinking depth for Gemini 3.x models ("low" keeps first-token latency ~2 s). Empty = model default.
+    gemini_thinking_level: str | None = "low"
     # Used when the primary model is overloaded (503) or rate-limited before any text arrived.
     gemini_fallback_model: str = "gemini-flash-lite-latest"
     gemini_fast_model: str = "gemini-flash-lite-latest"

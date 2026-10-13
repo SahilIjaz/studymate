@@ -42,3 +42,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Trigger Render redeploy
+        # Optional: set repository secret RENDER_DEPLOY_HOOK (Render → service → Settings → Deploy Hook).
+        if: ${{ secrets.RENDER_DEPLOY_HOOK != '' }}
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: curl -fsS -X POST "$HOOK" > /dev/null && echo "Render redeploy requested"

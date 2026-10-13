@@ -11,7 +11,8 @@ data:
   # Comma-separated list of frontend origins allowed to call the API.
   CORS_ORIGINS: "http://localhost:3000"
   LLM_PROVIDER: "gemini"
-  GEMINI_MODEL: "gemini-3.8-flash"
+  GEMINI_MODEL: "gemini-3.5-flash"
+  GEMINI_THINKING_LEVEL: "low"
   GEMINI_FALLBACK_MODEL: "gemini-flash-lite-latest"
   GEMINI_FAST_MODEL: "gemini-flash-lite-latest"
   EMBEDDING_PROVIDER: "gemini"
