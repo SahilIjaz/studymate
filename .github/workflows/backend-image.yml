@@ -33,7 +33,7 @@ jobs:
           tags: |
             type=raw,value=main
             type=sha,prefix=
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: study-mate-backend
           platforms: linux/amd64,linux/arm64
