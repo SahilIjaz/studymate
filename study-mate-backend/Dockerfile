@@ -3,19 +3,19 @@ FROM python:3.12-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
+    PIP_DEFAULT_TIMEOUT=120 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
     EMBEDDING_CACHE_DIR=/models \
     DATA_DIR=/data
 
 WORKDIR /srv
 
-# Build deps are only needed to compile wheels that lack binaries on this platform.
-RUN apt-get update \
- && apt-get install -y --no-install-recommends build-essential \
- && rm -rf /var/lib/apt/lists/*
-
+# Every dependency ships prebuilt wheels for linux/amd64 and linux/arm64, so
+# no compiler toolchain is installed. The pip cache is mounted by BuildKit so a
+# build that fails on a slow network resumes from the already-downloaded wheels.
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --retries 10 --timeout 120 -r requirements.txt
 
 # Optional: bake the local embedding model into the image so cold starts don't
 # hit the network. Off by default because the Gemini embedding API needs no

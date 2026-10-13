@@ -1,13 +1,9 @@
+# Local / generic cluster:  kubectl apply -k deploy/k8s
+# Production (k3s + TLS):   kubectl apply -k deploy/k8s/overlays/production
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: studymate
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - pvc.yaml
-  - deployment.yaml
-  - service.yaml
-  # - ingress.yaml   # enable once an ingress controller and DNS exist
+  - base
 images:
   - name: studymate-api
     newName: studymate-api

@@ -1,0 +1,18 @@
+# Production overlay: k3s on a single VM, Traefik ingress (k3s default),
+# cert-manager for Let's Encrypt, DuckDNS hostname, image from GHCR.
+#
+#   kubectl apply -k deploy/k8s/overlays/production
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - cluster-issuer.yaml
+  - ingress.yaml
+  - duckdns-cronjob.yaml
+images:
+  - name: studymate-api
+    newName: ghcr.io/sahilijaz/studymate-api
+    newTag: main
+patches:
+  - path: configmap-patch.yaml
+  - path: deployment-patch.yaml

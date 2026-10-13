@@ -183,7 +183,7 @@ The suite covers chunking and text repair, filename sanitising and upload sniffi
 
 ### Kubernetes
 
-Manifests live in [deploy/k8s](deploy/k8s): a namespace, a ConfigMap for non-secret settings, a Secret template for API keys, a 2 Gi PersistentVolumeClaim for `/data`, a single-replica Deployment (`Recreate` strategy, because SQLite and the FAISS files sit on one ReadWriteOnce volume), a ClusterIP Service, and an optional nginx Ingress with proxy buffering off so streamed answers aren't batched.
+Manifests live in [deploy/k8s](deploy/k8s) (`base/` plus a production overlay): a namespace, a ConfigMap for non-secret settings, a Secret template for API keys, a 2 Gi PersistentVolumeClaim for `/data`, a single-replica Deployment (`Recreate` strategy, because SQLite and the FAISS files sit on one ReadWriteOnce volume), a ClusterIP Service, and an optional nginx Ingress with proxy buffering off so streamed answers aren't batched.
 
 ```bash
 # 1. Build the image (and push it, unless the cluster can see your local Docker images)
@@ -202,7 +202,20 @@ kubectl -n studymate port-forward svc/studymate-api 8000:80
 curl http://127.0.0.1:8000/health
 ```
 
-Edit `deploy/k8s/configmap.yaml` for `CORS_ORIGINS` and model names, and `deploy/k8s/kustomization.yaml` to point `images:` at your registry tag. For a remote registry, `docker tag studymate-api:latest ghcr.io/<you>/studymate-api:<tag> && docker push ...` and set `newName`/`newTag` accordingly.
+#### Production: Vercel frontend + k3s backend on a free Oracle VM
+
+The production overlay in `deploy/k8s/overlays/production` adds what a public deployment needs: the GHCR image built by CI for amd64 and arm64, a Traefik Ingress for `study-mate-ai.duckdns.org`, a cert-manager ClusterIssuer for Let's Encrypt, a CronJob that keeps DuckDNS pointed at the VM, and `CORS_ORIGINS` set to the Vercel site.
+
+On a fresh Ubuntu VM (Oracle Cloud Always Free Ampere works; open ports 80 and 443 in the VCN security list first):
+
+```bash
+export GEMINI_API_KEY=...  DUCKDNS_TOKEN=...
+curl -fsSL https://raw.githubusercontent.com/SahilIjaz/studymate/main/study-mate-backend/deploy/k3s/bootstrap.sh | bash
+```
+
+The script installs k3s and cert-manager, creates the secrets, updates DuckDNS, applies the overlay and waits for the certificate. The image comes from `ghcr.io/sahilijaz/studymate-api`, pushed by the `Backend image` workflow on every push to `main`; make that package public once under GitHub → Packages → studymate-api → Package settings, or the node can't pull it. Re-run it after changing manifests. Then on Vercel, import the repo with root directory `studyMate-frontend` and set `NEXT_PUBLIC_API_URL=https://study-mate-ai.duckdns.org`.
+
+Edit `deploy/k8s/base/configmap.yaml` for `CORS_ORIGINS` and model names, and `deploy/k8s/kustomization.yaml` to point `images:` at your registry tag. For a remote registry, `docker tag studymate-api:latest ghcr.io/<you>/studymate-api:<tag> && docker push ...` and set `newName`/`newTag` accordingly.
 
 ### Render
 

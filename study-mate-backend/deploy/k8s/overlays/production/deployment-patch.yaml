@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: studymate-api
+  namespace: studymate
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          # GHCR images are rebuilt on every push to main; always pull the new digest.
+          imagePullPolicy: Always

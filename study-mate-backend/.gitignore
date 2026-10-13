@@ -23,4 +23,4 @@ models/
 .vscode/
 
 # Filled-in Kubernetes secret (keep only the .example template)
-deploy/k8s/secret.yaml
+deploy/k8s/**/secret.yaml

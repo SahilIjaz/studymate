@@ -1,0 +1,31 @@
+# Keeps study-mate-ai.duckdns.org pointed at this VM's public IP.
+# Needs a secret with the DuckDNS token:
+#   kubectl -n studymate create secret generic duckdns --from-literal=token='...'
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: duckdns-updater
+  namespace: studymate
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: update
+              image: curlimages/curl:8.12.1
+              env:
+                - name: DUCKDNS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: duckdns
+                      key: token
+              command:
+                - sh
+                - -c
+                - 'curl -fsS "https://www.duckdns.org/update?domains=study-mate-ai&token=${DUCKDNS_TOKEN}&ip=" && echo'
