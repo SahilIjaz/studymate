@@ -17,6 +17,9 @@ permissions:
 jobs:
   build-push:
     runs-on: ubuntu-latest
+    env:
+      # Optional: Render → service → Settings → Deploy Hook, stored as a repository secret.
+      RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -43,8 +46,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Trigger Render redeploy
-        # Optional: set repository secret RENDER_DEPLOY_HOOK (Render → service → Settings → Deploy Hook).
-        if: ${{ secrets.RENDER_DEPLOY_HOOK != '' }}
-        env:
-          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
-        run: curl -fsS -X POST "$HOOK" > /dev/null && echo "Render redeploy requested"
+        if: ${{ env.RENDER_DEPLOY_HOOK != '' }}
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK" > /dev/null && echo "Render redeploy requested"
