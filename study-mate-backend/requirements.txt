@@ -9,6 +9,6 @@ faiss-cpu==1.15.1
 numpy==2.5.4
 rank-bm25==0.2.2
 fastembed==0.9.0
-anthropic==1.13.0
+anthropic==1.15.0
 google-genai==2.29.0
 httpx==0.28.1
